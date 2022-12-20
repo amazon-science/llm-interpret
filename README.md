@@ -1,11 +1,20 @@
-## My Project
+## Rethinking the Role of Scale for In-Context Learning: An Interpretability-based Case Study at 66 Billion Scale
 
-TODO: Fill this README out!
+This repository will include code to reproduce the experiments in the paper "[Rethinking the Role of Scale for In-Context Learning: An Interpretability-based Case Study at 66 Billion Scale](https://arxiv.org/abs/2212.09095)". Stay tuned!
 
-Be sure to:
+## Citation
 
-* Change the title in this README
-* Edit your repository description on GitHub
+If you find our work useful, please consider citing using the following:
+```
+@misc{bansal2022rethinking,
+      title={Rethinking the Role of Scale for In-Context Learning: An Interpretability-based Case Study at 66 Billion Scale}, 
+      author={Hritik Bansal and Karthik Gopalakrishnan and Saket Dingliwal and Sravan Bodapati and Katrin Kirchhoff and Dan Roth},
+      year={2022},
+      eprint={2212.09095},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```
 
 ## Security
 
