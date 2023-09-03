@@ -45,7 +45,9 @@ for importance score computations. Specifically:
 2. we define masks to "knock-off" particular feed forward networks (see `fc_mask` and `layer_fc_mask`)
 
 The modified implementation is located at [transformers/models/opt/modeling_opt.py](transformers/models/opt/modeling_opt.py)
-in this repo. Copy this to the corresponding location for OPT in the local clone of `transformers`.
+in this repo.
+
+Copy this script to the corresponding location for OPT in the local clone of `transformers`.
 
 ### Changes to `lm-evaluation-harness`
 
@@ -74,10 +76,24 @@ our paper.
 Copy these scripts to their corresponding locations in the local clone of `lm-evaluation-harness`.
 
 
-### Prefix Matching and Copying
+### Induction Heads: Prefix Matching and Copying
+[lm_eval/prefix_matching_copying.py](lm_eval/prefix_matching_copying.py) contains our
+implementation for computing prefix matching and copying scores for attention heads,
+also described in detail with pseudocode in our paper's Appendix. The original
+algorithm by Anthropic is described in the Additional Details section of the Transformer Circuits Thread post [here](https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html#data-collection).
+Please refer to our paper's Appendix for a description of the modifications we made
+to their algorithm.
 
+Copy this script to the `lm_eval` directory in the local clone of `lm-evaluation-harness`.
 
 ### Plotting
+We provide the scripts used to create the plots in our paper in the
+[scripts/](scripts/) directory. These scripts assume that the importance scores
+are already computed and dumped in pickle files and the task-specific evaluation
+results are dumped in JSON files using the code described above.
+
+Note that you may have to edit these scripts a bit according to the naming convention
+you adopt for the importance score pickle and evaluation result JSON files you create.
 
 
 ## Sample Commands
