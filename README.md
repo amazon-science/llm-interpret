@@ -175,6 +175,21 @@ the model on the PIQA task in the 1-shot setting.
 python main.py --model opt --model_args pretrained=facebook/opt-66b,model_cache_dir=opt66b_checkpoints,tokenizer_cache_dir=opt66b_tokenizer,mask_iterative_fc=1,fc_importance_path=logs/fc_knocking_importance/1shot_piqa.pkl,fc_percent_mask=30,mask_heads=1,head_importance_path=logs/head_importance/opt66b/1shot_piqa.pkl,head_percent_mask=20 --tasks piqa --output_path results/66b/piqa/1shot_30_fc_20_head_percent.txt --batch_size 2 --num_fewshot 1
 ```
 
+### Prefix Matching and Copying
+
+To compute, plot and save prefix matching and copying scores, the following pair of
+sample commands can be used.
+
+Prefix Matching:
+```
+python lm_eval/prefix_matching_copying.py --prefix_matching --pretrained facebook/opt-66b --model_cache_dir opt66b_checkpoints/ --tokenizer_cache_dir opt66b_tokenizer/ --save_plot_path_mean paper_plots/induction_heads/pfx_matching_mean.png --save_plot_path_var paper_plots/induction_heads/pfx_matching_var.png --save_outputs paper_plots/induction_heads/pfx_matching.pkl
+```
+
+Copying:
+```
+python lm_eval/prefix_matching_copying.py --copying_score --pretrained facebook/opt-66b --model_cache_dir opt66b_checkpoints/ --tokenizer_cache_dir opt66b_tokenizer/ --save_plot_path_mean paper_plots/induction_heads/copying_mean.png --save_plot_path_var paper_plots/induction_heads/copying_var.png --save_outputs paper_plots/induction_heads/copying.pkl
+```
+
 
 ## Citation
 
