@@ -70,7 +70,7 @@ loader via `utils.py` as described above and define a getter method for the data
 `get_dataloader()` method.
 
 The driver script `main.py` is also adapted to allow these changes to be leveraged. Note that this
-script dumps the evaluation results into JSON files, which are necessary to create some plots in
+script dumps the evaluation results into JSON-formatted text files, which are necessary to create some plots in
 our paper.
 
 Copy these scripts to their corresponding locations in the local clone of `lm-evaluation-harness`.
@@ -90,14 +90,90 @@ Copy this script to the `lm_eval` directory in the local clone of `lm-evaluation
 We provide the scripts used to create the plots in our paper in the
 [scripts/](scripts/) directory. These scripts assume that the importance scores
 are already computed and dumped in pickle files and the task-specific evaluation
-results are dumped in JSON files using the code described above.
+results are dumped in JSON-formatted text files using the code described above.
 
 Note that you may have to edit these scripts a bit according to the naming convention
-you adopt for the importance score pickle and evaluation result JSON files you create.
+you adopt for the importance score pickle and evaluation result text files you create.
 
 
 ## Sample Commands
+In this section, we provide sample commands leveraging the code described above
+for a few use-cases. We recommend diving into the code and understanding the
+supported args to be able to leverage all supported functionality.
 
+### Model and Tokenizer Caching
+Load the pre-trained model and tokenizer into explicitly defined cache directories
+as a one-time operation:
+```
+cd lm-evaluation-harness
+python
+>>> from transformers import AutoModel, AutoTokenizer
+>>> model = AutoModel.from_pretrained('facebook/opt-66b', cache_dir='opt66b_checkpoints/')
+>>> tokenizer = AutoTokenizer.from_pretrained('facebook/opt-66b', cache_dir='opt66b_tokenizer/')
+```
+
+### Attention Head Importance Scores
+The following command computes and saves attention head importance scores for the
+Physical IQA (PIQA) task in the 1-shot setting:
+```
+python main.py --model opt --model_args pretrained=facebook/opt-66b,model_cache_dir=opt66b_checkpoints,tokenizer_cache_dir=opt66b_tokenizer --tasks piqa --head_importance_calc --save_importance_path logs/head_importance/opt66b/1shot_piqa.pkl --num_fewshot 1
+```
+
+### Masking A Feed Forward Network
+
+To mask a particular feed forward network (FFN) and evaluate the model on a
+particular task, the following sample command can be used. OPT has 64 layers and
+in this case, we are masking the FFN in layer 10 (indexing starting from 0) when
+evaluating the model on the PIQA task in the 5-shot setting.
+
+```
+python main.py --model opt --model_args pretrained=facebook/opt-66b,model_cache_dir=opt66b_checkpoints,tokenizer_cache_dir=opt66b_tokenizer,mask_fc=10 --tasks piqa --output_path results/66b/5shot_fc_pruning/piqa/5shot_fc_10.txt --batch_size 2 --num_fewshot 5
+```
+
+### Iterative Pruning of Attention Heads
+
+To mask unimportant attention heads and evaluate the model on a particular task,
+the following sample command can be used. In this case, we are masking 20% (range: 0-90%)
+of the task and shot-specific unimportant attention heads and evaluating the model
+on the PIQA task in the 1-shot setting.
+
+```
+python main.py --model opt --model_args pretrained=facebook/opt-66b,model_cache_dir=opt66b_checkpoints,tokenizer_cache_dir=opt66b_tokenizer,mask_heads=1,head_importance_path=logs/head_importance/opt66b/1shot_piqa.pkl,head_percent_mask=20 --tasks piqa --output_path results/66b/piqa/1shot_piqa_percent.txt --batch_size 2 --num_fewshot 1
+```
+
+### FFN Importance Scores
+
+The following command leverages `fc_importance.py`, which computes importance
+scores for each FFN as the difference between the baseline accuracy and the
+accuracy after masking the FFN for each task, and dumps them to pickle files.
+The accuracy upon independently masking each FFN is assumed to have already been
+computed as described above with an earlier sample command.
+
+```
+python scripts/plotting/fc_importance.py --results_path results/66b/5shot_fc_pruning/ --base_results_path results/66b/ --shot 5-shot --save_plot_path paper_plots/fc_importance/5-shot.png --dump_fc_importance --dump_fc_importance_path logs/fc_knocking_importance/
+```
+
+### Iterative Pruning of FFNs
+
+To mask unimportant FFNs and evaluate the model on a particular task, the following
+sample command can be used. In this case, we are masking 20% (range: 0-90%) of the
+task and shot-specific unimportant FFNs and evaluating the model on the PIQA task
+in the 5-shot setting.
+
+```
+python main.py --model opt --model_args pretrained=facebook/opt-66b,model_cache_dir=opt66b_checkpoints,tokenizer_cache_dir=opt66b_tokenizer,mask_iterative_fc=1,fc_importance_path=logs/fc_knocking_importance/5shot_piqa.pkl,fc_percent_mask=20 --tasks piqa --output_path results/66b/piqa/5shot_20_fc_percent.txt --batch_size 1 --num_fewshot 5
+```
+
+### Combined Pruning of Heads and FFNs
+
+To evaluate the model on a particular task after combined pruning of attention heads
+and FFNs, the following sample command can be used. In this case, we are masking
+20% of the unimportant attention heads and 30% of the unimportant FFNs and evaluating
+the model on the PIQA task in the 1-shot setting.
+
+```
+python main.py --model opt --model_args pretrained=facebook/opt-66b,model_cache_dir=opt66b_checkpoints,tokenizer_cache_dir=opt66b_tokenizer,mask_iterative_fc=1,fc_importance_path=logs/fc_knocking_importance/1shot_piqa.pkl,fc_percent_mask=30,mask_heads=1,head_importance_path=logs/head_importance/opt66b/1shot_piqa.pkl,head_percent_mask=20 --tasks piqa --output_path results/66b/piqa/1shot_30_fc_20_head_percent.txt --batch_size 2 --num_fewshot 1
+```
 
 
 ## Citation
