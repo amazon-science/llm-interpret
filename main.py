@@ -96,7 +96,7 @@ def main():
     )
     
     # if args.local_rank == 0:
-    if not args.head_importance_calc and not args.head_redundancy and not args.fc_importance_calc:
+    if not args.head_importance_calc:
         dumped = json.dumps(results, indent=2)
         print(dumped)
         os.makedirs(os.path.dirname(args.output_path), exist_ok = True)
