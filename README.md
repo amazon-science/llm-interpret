@@ -182,12 +182,12 @@ sample commands can be used.
 
 Prefix Matching:
 ```
-python lm_eval/prefix_matching_copying.py --prefix_matching --pretrained facebook/opt-66b --model_cache_dir opt66b_checkpoints/ --tokenizer_cache_dir opt66b_tokenizer/ --save_plot_path_mean paper_plots/induction_heads/pfx_matching_mean.png --save_plot_path_var paper_plots/induction_heads/pfx_matching_var.png --save_outputs paper_plots/induction_heads/pfx_matching.pkl
+python -m lm_eval.prefix_matching_copying --prefix_matching --pretrained facebook/opt-66b --model_cache_dir opt66b_checkpoints/ --tokenizer_cache_dir opt66b_tokenizer/ --save_plot_path_mean paper_plots/induction_heads/pfx_matching_mean.png --save_plot_path_var paper_plots/induction_heads/pfx_matching_var.png --save_outputs paper_plots/induction_heads/pfx_matching.pkl
 ```
 
 Copying:
 ```
-python lm_eval/prefix_matching_copying.py --copying_score --pretrained facebook/opt-66b --model_cache_dir opt66b_checkpoints/ --tokenizer_cache_dir opt66b_tokenizer/ --save_plot_path_mean paper_plots/induction_heads/copying_mean.png --save_plot_path_var paper_plots/induction_heads/copying_var.png --save_outputs paper_plots/induction_heads/copying.pkl
+python -m lm_eval.prefix_matching_copying --copying_score --pretrained facebook/opt-66b --model_cache_dir opt66b_checkpoints/ --tokenizer_cache_dir opt66b_tokenizer/ --save_plot_path_mean paper_plots/induction_heads/copying_mean.png --save_plot_path_var paper_plots/induction_heads/copying_var.png --save_outputs paper_plots/induction_heads/copying.pkl
 ```
 
 
